@@ -9,6 +9,8 @@ def analyze_emotion(diary_text):
 # 일기 저장 상태 관리
 if 'diary_entries' not in st.session_state:
     st.session_state['diary_entries'] = {}
+if 'selected_day' not in st.session_state:
+    st.session_state['selected_day'] = None
 
 # 메인 화면
 st.title("감정 분석 일기")
@@ -21,66 +23,76 @@ cal = calendar.Calendar()
 
 st.subheader(f"{current_year}년 {current_month}월")
 
-# 달력 그리기
-selected_day = None
-days = [day for day in cal.itermonthdays(current_year, current_month) if day != 0]
+# 날짜 선택 후 달력 크기 조정 및 일기 창 표시
+if st.session_state['selected_day'] is None:
+    # 달력 전체 크기로 출력
+    cols = st.columns(7)
+    weekdays = ['월', '화', '수', '목', '금', '토', '일']
 
-# 날짜 선택
-cols = st.columns(7)
-weekdays = ['월', '화', '수', '목', '금', '토', '일']
+    # 요일 출력
+    for i, weekday in enumerate(weekdays):
+        cols[i].write(weekday)
 
-# 요일 출력
-for i, weekday in enumerate(weekdays):
-    cols[i].write(weekday)
-
-# 날짜 출력
-for i, day in enumerate(days):
-    if day == today.day:
-        selected_day = day
-    button_label = f"{day}"
-    if cols[i % 7].button(button_label):
-        selected_day = day
-
-# 선택된 날짜 저장
-if selected_day:
-    selected_date = date(current_year, current_month, selected_day)
+    # 달력 그리기
+    days = [day for day in cal.itermonthdays(current_year, current_month) if day != 0]
+    for i, day in enumerate(days):
+        button_label = f"{day}"
+        if cols[i % 7].button(button_label):
+            st.session_state['selected_day'] = day
 else:
-    selected_date = today
-
-st.write(f"선택한 날짜: {selected_date}")
-
-if selected_date not in st.session_state['diary_entries']:
-    st.session_state['diary_entries'][selected_date] = {"text": "", "image": None, "solution": None}
-
-# 일기 입력 팝업
-with st.container():
-    st.subheader(f"{selected_date}의 일기를 작성하세요")
-
-    # 일기 입력창을 자동 확장, 그러나 브라우저 창 크기를 넘어가면 스크롤이 생기도록 설정
-    diary_text = st.text_area("일기 내용", st.session_state['diary_entries'][selected_date]["text"], height=100)
-
-    uploaded_image = st.file_uploader("이미지 업로드", type=["png", "jpg", "jpeg"])
+    # 선택한 날짜 저장
+    selected_date = date(current_year, current_month, st.session_state['selected_day'])
     
-    # 일기 저장 버튼
-    if st.button("일기 저장"):
-        st.session_state['diary_entries'][selected_date]["text"] = diary_text
-        st.session_state['diary_entries'][selected_date]["image"] = uploaded_image
-        st.success("일기가 저장되었습니다!")
+    # 달력을 작은 크기로 왼쪽에 표시하고 일기 입력창을 오른쪽에 표시
+    left_col, right_col = st.columns([1, 2])
 
-        # 저장 후 솔루션 생성
-        solution = analyze_emotion(diary_text)
-        st.session_state['diary_entries'][selected_date]["solution"] = solution
+    # 왼쪽에 작은 달력 표시
+    with left_col:
+        st.write(f"선택한 날짜: {selected_date}")
+        st.subheader(f"{current_year}년 {current_month}월")
+        
+        # 작은 달력 그리기
+        cols = st.columns(7)
+        weekdays = ['월', '화', '수', '목', '금', '토', '일']
 
-    # 솔루션 보기 버튼
-    if st.session_state['diary_entries'][selected_date]["solution"]:
-        if st.button("솔루션 보기"):
-            with st.container():
+        for i, weekday in enumerate(weekdays):
+            cols[i].write(weekday)
+
+        for i, day in enumerate(days):
+            button_label = f"{day}"
+            cols[i % 7].write(button_label)
+    
+    # 오른쪽에 일기 입력 창 표시
+    with right_col:
+        st.subheader(f"{selected_date}의 일기를 작성하세요")
+        
+        if selected_date not in st.session_state['diary_entries']:
+            st.session_state['diary_entries'][selected_date] = {"text": "", "image": None, "solution": None}
+
+        # 일기 입력창을 자동 확장, 그러나 브라우저 창 크기를 넘어가면 스크롤이 생기도록 설정
+        diary_text = st.text_area("일기 내용", st.session_state['diary_entries'][selected_date]["text"], height=100)
+
+        uploaded_image = st.file_uploader("이미지 업로드", type=["png", "jpg", "jpeg"])
+
+        # 일기 저장 버튼
+        if st.button("일기 저장"):
+            st.session_state['diary_entries'][selected_date]["text"] = diary_text
+            st.session_state['diary_entries'][selected_date]["image"] = uploaded_image
+            st.success("일기가 저장되었습니다!")
+
+            # 저장 후 솔루션 생성
+            solution = analyze_emotion(diary_text)
+            st.session_state['diary_entries'][selected_date]["solution"] = solution
+
+        # 솔루션 보기 버튼
+        if st.session_state['diary_entries'][selected_date]["solution"]:
+            if st.button("솔루션 보기"):
                 st.subheader(f"{selected_date}의 일기")
                 st.write(diary_text)
-                
+
                 if uploaded_image:
                     st.image(uploaded_image, caption="업로드된 이미지")
-                
+
                 st.subheader("추천 솔루션")
                 solution = st.session_state['diary_entries'][selected_date]["solution"]
                 st.write(f"**대표 감정:** {solution['main_emotion']}")
