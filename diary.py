@@ -1,5 +1,6 @@
 import streamlit as st
-from datetime import date
+import calendar
+from datetime import date, datetime
 
 # 감정 분석 함수 (실제 로직으로 대체 가능)
 def analyze_emotion(diary_text):
@@ -11,8 +12,42 @@ if 'diary_entries' not in st.session_state:
 
 # 메인 화면
 st.title("감정 분석 일기")
-selected_date = st.sidebar.date_input("날짜 선택", date.today())
-st.sidebar.write("선택한 날짜:", selected_date)
+
+# 현재 월의 달력 표시
+today = date.today()
+current_year = today.year
+current_month = today.month
+cal = calendar.Calendar()
+
+st.subheader(f"{current_year}년 {current_month}월")
+
+# 달력 그리기
+selected_day = None
+days = [day for day in cal.itermonthdays(current_year, current_month) if day != 0]
+
+# 날짜 선택
+cols = st.columns(7)
+weekdays = ['월', '화', '수', '목', '금', '토', '일']
+
+# 요일 출력
+for i, weekday in enumerate(weekdays):
+    cols[i].write(weekday)
+
+# 날짜 출력
+for i, day in enumerate(days):
+    if day == today.day:
+        selected_day = day
+    button_label = f"{day}"
+    if cols[i % 7].button(button_label):
+        selected_day = day
+
+# 선택된 날짜 저장
+if selected_day:
+    selected_date = date(current_year, current_month, selected_day)
+else:
+    selected_date = today
+
+st.write(f"선택한 날짜: {selected_date}")
 
 if selected_date not in st.session_state['diary_entries']:
     st.session_state['diary_entries'][selected_date] = {"text": "", "image": None, "solution": None}
@@ -20,8 +55,10 @@ if selected_date not in st.session_state['diary_entries']:
 # 일기 입력 팝업
 with st.container():
     st.subheader(f"{selected_date}의 일기를 작성하세요")
+
+    # 일기 입력창을 자동 확장, 그러나 브라우저 창 크기를 넘어가면 스크롤이 생기도록 설정
     diary_text = st.text_area("일기 내용", st.session_state['diary_entries'][selected_date]["text"], height=100)
-    
+
     uploaded_image = st.file_uploader("이미지 업로드", type=["png", "jpg", "jpeg"])
     
     # 일기 저장 버튼
@@ -50,12 +87,13 @@ with st.container():
                 st.write(f"**솔루션명:** {solution['solution_name']}")
                 st.write(f"**상세 내용:** {solution['details']}")
 
-# 스크롤 기능 추가 (내용이 브라우저 창보다 클 때)
+# CSS를 사용하여 일기 입력창이 커지다가 브라우저 창보다 길어지면 스크롤이 생기도록 설정
 st.markdown("""
     <style>
-    .css-1d391kg { 
-        overflow: auto;
-        height: 100vh;
+    textarea {
+        min-height: 100px;
+        max-height: 60vh; /* 브라우저 창의 60%까지만 입력창이 확장 */
+        overflow-y: auto; /* 그 이상일 경우 스크롤 */
     }
     </style>
     """, unsafe_allow_html=True)
