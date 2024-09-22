@@ -1,6 +1,6 @@
 import streamlit as st
 import calendar
-from datetime import date, datetime
+from datetime import date
 
 # 감정 분석 함수 (실제 로직으로 대체 가능)
 def analyze_emotion(diary_text):
