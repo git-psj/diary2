@@ -41,11 +41,11 @@ if st.session_state['selected_day'] is None:
             # 선택된 날짜를 상태에 저장
             st.session_state['selected_day'] = day
 
-# 날짜 선택 후: 달력이 왼쪽으로 이동하고 오른쪽에 일기 입력 창이 나타남
+# 날짜 선택 후: 일기 입력 창과 달력 위치 조정
 if st.session_state['selected_day'] is not None:
     selected_date = date(current_year, current_month, st.session_state['selected_day'])
     
-    # 왼쪽: 달력을 작은 크기로 표시, 오른쪽에 일기 입력 창 표시
+    # 달력을 작은 크기로 왼쪽에 표시하고, 오른쪽에 일기 입력창 표시
     left_col, right_col = st.columns([1, 2])
 
     with left_col:
@@ -62,8 +62,9 @@ if st.session_state['selected_day'] is not None:
         for i, day in enumerate(days):
             button_label = f"{day}"
             if cols[i % 7].button(button_label):
-                st.session_state['selected_day'] = day  # 새로운 날짜로 업데이트
-    
+                # 다른 날짜 선택 시 선택 날짜 업데이트
+                st.session_state['selected_day'] = day
+
     # 오른쪽에 일기 입력 창 표시
     with right_col:
         st.subheader(f"{selected_date}의 일기를 작성하세요")
