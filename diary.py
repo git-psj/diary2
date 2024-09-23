@@ -23,9 +23,9 @@ cal = calendar.Calendar()
 
 st.subheader(f"{current_year}년 {current_month}월")
 
-# 날짜 선택 후 달력 크기 조정 및 일기 창 표시
+# 날짜 선택 전: 달력이 전체 화면에 표시
 if st.session_state['selected_day'] is None:
-    # 달력 전체 크기로 출력
+    # 달력 출력
     cols = st.columns(7)
     weekdays = ['월', '화', '수', '목', '금', '토', '일']
 
@@ -38,19 +38,20 @@ if st.session_state['selected_day'] is None:
     for i, day in enumerate(days):
         button_label = f"{day}"
         if cols[i % 7].button(button_label):
+            # 선택된 날짜를 상태에 저장
             st.session_state['selected_day'] = day
-else:
-    # 선택한 날짜 저장
+
+# 날짜 선택 후: 일기 입력 창과 달력 위치 조정
+if st.session_state['selected_day'] is not None:
     selected_date = date(current_year, current_month, st.session_state['selected_day'])
     
-    # 달력을 작은 크기로 왼쪽에 표시하고 일기 입력창을 오른쪽에 표시
+    # 달력을 작은 크기로 왼쪽에 표시하고, 오른쪽에 일기 입력창 표시
     left_col, right_col = st.columns([1, 2])
 
-    # 왼쪽에 작은 달력 표시
     with left_col:
         st.write(f"선택한 날짜: {selected_date}")
         st.subheader(f"{current_year}년 {current_month}월")
-        
+
         # 작은 달력 그리기
         cols = st.columns(7)
         weekdays = ['월', '화', '수', '목', '금', '토', '일']
@@ -65,13 +66,12 @@ else:
     # 오른쪽에 일기 입력 창 표시
     with right_col:
         st.subheader(f"{selected_date}의 일기를 작성하세요")
-        
+
         if selected_date not in st.session_state['diary_entries']:
             st.session_state['diary_entries'][selected_date] = {"text": "", "image": None, "solution": None}
 
-        # 일기 입력창을 자동 확장, 그러나 브라우저 창 크기를 넘어가면 스크롤이 생기도록 설정
+        # 일기 입력창을 자동 확장, 브라우저 크기보다 길어지면 스크롤이 생기도록 설정
         diary_text = st.text_area("일기 내용", st.session_state['diary_entries'][selected_date]["text"], height=100)
-
         uploaded_image = st.file_uploader("이미지 업로드", type=["png", "jpg", "jpeg"])
 
         # 일기 저장 버튼
