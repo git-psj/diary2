@@ -1,113 +1,47 @@
 import streamlit as st
-import calendar
-from datetime import date
 
-# 감정 분석 함수 (실제 로직으로 대체 가능)
-def analyze_emotion(diary_text):
-    return {"main_emotion": "행복", "solution_name": "긍정적인 사고", "details": "긍정적인 생각을 유지하고 동기부여를 잃지 마세요!"}
+# 페이지 레이아웃 설정
+st.set_page_config(layout="centered")
 
-# 일기 저장 상태 관리
-if 'diary_entries' not in st.session_state:
-    st.session_state['diary_entries'] = {}
-if 'selected_day' not in st.session_state:
-    st.session_state['selected_day'] = None
+# 페이지 배경 설정
+page_bg_img = '''
+<style>
+body {
+    background-image: url("https://images.unsplash.com/photo-1499084732479-de2c02d45fc4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDN8fGNsb3VkeXxlbnwwfHx8fDE2NjQwNjE2Mzc&ixlib=rb-1.2.1&q=80&w=1080");
+    background-size: cover;
+}
+</style>
+'''
 
-# 메인 화면
-st.title("감정 분석 일기")
+st.markdown(page_bg_img, unsafe_allow_html=True)
 
-# 현재 월의 달력 표시
-today = date.today()
-current_year = today.year
-current_month = today.month
-cal = calendar.Calendar()
+# 회원가입 제목
+st.markdown("<h1 style='text-align: center; color: white;'>회원가입</h1>", unsafe_allow_html=True)
 
-st.subheader(f"{current_year}년 {current_month}월")
+# 입력 필드
+st.text_input("아이디", placeholder="아이디를 입력하세요")
+st.text_input("비밀번호", type="password", placeholder="비밀번호를 입력하세요")
+st.text_input("비밀번호 확인", type="password", placeholder="비밀번호를 다시 입력하세요")
+st.text_input("닉네임", placeholder="닉네임을 입력하세요")
 
-# 날짜 선택 전: 달력이 전체 화면에 표시
-if st.session_state['selected_day'] is None:
-    # 달력 출력
-    cols = st.columns(7)
-    weekdays = ['월', '화', '수', '목', '금', '토', '일']
+# 연령대 선택
+age_group = st.selectbox("연령대", ["10대", "20대", "30대", "40대", "50대", "60대 이상"])
 
-    # 요일 출력
-    for i, weekday in enumerate(weekdays):
-        cols[i].write(weekday)
+# 성별 선택
+gender = st.radio("성별", ["남성", "여성", "기타"])
 
-    # 달력 그리기
-    days = [day for day in cal.itermonthdays(current_year, current_month) if day != 0]
-    for i, day in enumerate(days):
-        button_label = f"{day}"
-        if cols[i % 7].button(button_label):
-            # 선택된 날짜를 상태에 저장
-            st.session_state['selected_day'] = day
+# 주소 (시/도) 입력
+address = st.text_input("주소 (시/도)", placeholder="거주하는 시/도를 입력하세요")
 
-# 날짜 선택 후: 일기 입력 창과 달력 위치 조정
-if st.session_state['selected_day'] is not None:
-    selected_date = date(current_year, current_month, st.session_state['selected_day'])
-    
-    # 달력을 작은 크기로 왼쪽에 표시하고, 오른쪽에 일기 입력창 표시
-    left_col, right_col = st.columns([1, 2])
+# 중복 확인과 회원가입 버튼
+col1, col2 = st.columns([3, 1])
 
-    with left_col:
-        st.write(f"선택한 날짜: {selected_date}")
-        st.subheader(f"{current_year}년 {current_month}월")
+with col1:
+    st.button("중복 확인")
 
-        # 작은 달력 그리기
-        cols = st.columns(7)
-        weekdays = ['월', '화', '수', '목', '금', '토', '일']
+with col2:
+    st.button("회원가입", key="submit")
 
-        for i, weekday in enumerate(weekdays):
-            cols[i].write(weekday)
-
-        for i, day in enumerate(days):
-            button_label = f"{day}"
-            if cols[i % 7].button(button_label):
-                # 다른 날짜 선택 시 선택 날짜 업데이트
-                st.session_state['selected_day'] = day
-
-    # 오른쪽에 일기 입력 창 표시
-    with right_col:
-        st.subheader(f"{selected_date}의 일기를 작성하세요")
-
-        if selected_date not in st.session_state['diary_entries']:
-            st.session_state['diary_entries'][selected_date] = {"text": "", "image": None, "solution": None}
-
-        # 일기 입력창을 자동 확장, 브라우저 크기보다 길어지면 스크롤이 생기도록 설정
-        diary_text = st.text_area("일기 내용", st.session_state['diary_entries'][selected_date]["text"], height=100)
-        uploaded_image = st.file_uploader("이미지 업로드", type=["png", "jpg", "jpeg"])
-
-        # 일기 저장 버튼
-        if st.button("일기 저장"):
-            st.session_state['diary_entries'][selected_date]["text"] = diary_text
-            st.session_state['diary_entries'][selected_date]["image"] = uploaded_image
-            st.success("일기가 저장되었습니다!")
-
-            # 저장 후 솔루션 생성
-            solution = analyze_emotion(diary_text)
-            st.session_state['diary_entries'][selected_date]["solution"] = solution
-
-        # 솔루션 보기 버튼
-        if st.session_state['diary_entries'][selected_date]["solution"]:
-            if st.button("솔루션 보기"):
-                st.subheader(f"{selected_date}의 일기")
-                st.write(diary_text)
-
-                if uploaded_image:
-                    st.image(uploaded_image, caption="업로드된 이미지")
-
-                st.subheader("추천 솔루션")
-                solution = st.session_state['diary_entries'][selected_date]["solution"]
-                st.write(f"**대표 감정:** {solution['main_emotion']}")
-                st.write(f"**솔루션명:** {solution['solution_name']}")
-                st.write(f"**상세 내용:** {solution['details']}")
-
-# CSS를 사용하여 일기 입력창이 커지다가 브라우저 창보다 길어지면 스크롤이 생기도록 설정
-st.markdown("""
-    <style>
-    textarea {
-        min-height: 100px;
-        max-height: 60vh; /* 브라우저 창의 60%까지만 입력창이 확장 */
-        overflow-y: auto; /* 그 이상일 경우 스크롤 */
-    }
-    </style>
-    """, unsafe_allow_html=True)
+# 제출 후 처리
+if st.session_state.get("submit"):
+    st.success("회원가입이 완료되었습니다!")
