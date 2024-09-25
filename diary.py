@@ -3,7 +3,7 @@ import firebase_admin
 from firebase_admin import credentials, auth, firestore
 
 # Firebase 초기화
-firebase_credentials = st.secrets["firebase"]['firebase_credentials']
+firebase_credentials = st.secrets["firebase"]
 cred = credentials.Certificate(firebase_credentials)
 firebase_admin.initialize_app(cred)
 
