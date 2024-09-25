@@ -1,30 +1,4 @@
-import streamlit as st
-import firebase_admin
-from firebase_admin import credentials, firestore
-
-# Firebase 서비스 계정 파일 경로
-cred = credentials.Certificate("path_to_your_firebase_credentials.json")
-firebase_admin.initialize_app(cred)
-
-# Firestore 데이터베이스에 연결
-db = firestore.client()
-
-# Firestore 데이터 추가 예시
-def add_user_data(user_id, user_data):
-    db.collection("users").document(user_id).set(user_data)
-
-# Streamlit을 통해 사용자 정보를 입력받아 Firestore에 저장하는 예시
-st.title("Firebase 연결 예시")
-
-user_id = st.text_input("사용자 ID 입력")
-user_name = st.text_input("사용자 이름 입력")
-
-if st.button("사용자 데이터 추가"):
-    user_data = {
-        "name": user_name
-    }
-    add_user_data(user_id, user_data)
-    st.write(f"사용자 {user_name} 데이터가 Firestore에 추가되었습니다!")
+sudo pip install firebase-admin
 
 
 
