@@ -83,5 +83,5 @@ if st.button("회원가입", key="select_signup"):  # 고유 키
     signup_page()
 elif st.button("로그인", key="select_login"):  # 고유 키
     login_page()
-else:
-    st.write("회원가입 또는 로그인 버튼을 클릭하세요.")
+# else:
+#     st.write("회원가입 또는 로그인 버튼을 클릭하세요.")
