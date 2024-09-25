@@ -79,6 +79,9 @@ def login_page():
             st.error(f"로그인 실패: {str(e)}")
 
 
+if "page" not in st.session_state:
+    st.session_state.page = "login" 
+    
     
 if st.button("회원가입 하러 가기", key="select_signup"):  # 고유 키
     st.session_state.page = "signup"
