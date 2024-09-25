@@ -45,7 +45,7 @@ def register_user(email, password, nickname, age_group, gender, address):
     except Exception as e:
         st.error(f"오류 발생: {e}")
 
-def def signup_page():
+def signup_page():
     st.title("회원가입")
 
     # 회원가입 입력 폼
