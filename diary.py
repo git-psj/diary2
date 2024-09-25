@@ -66,12 +66,17 @@ def signup_page():
 
 def login_page():
     st.title("로그인 페이지")
-    username = st.text_input("사용자 이름")
+    username = st.text_input("이메일")
     password = st.text_input("비밀번호", type="password")
     
     if st.button("로그인"):
-        # 여기에 로그인 로직 추가
-        st.success("로그인 성공!")
+        try:
+            user = auth.sign_in_with_email_and_password(email, password)
+            # 여기에 로그인 로직 추가
+            # 예를 들어, 사용자의 비밀번호를 확인하는 추가적인 로직이 필요합니다.
+            st.success(f"{user.email}님, 로그인 성공!")
+        except auth.AuthError as e:
+            st.error(f"로그인 실패: {str(e)}")
 
 
 if st.button("회원가입"):
