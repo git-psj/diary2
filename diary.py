@@ -79,9 +79,9 @@ def login_page():
             st.error(f"로그인 실패: {str(e)}")
 
 
-if st.button("회원가입", key="select_signup"):  # 고유 키
+if st.button("회원가입 하러 가기", key="select_signup"):  # 고유 키
     signup_page()
-elif st.button("로그인", key="select_login"):  # 고유 키
+elif st.button("로그인 하러 가기", key="select_login"):  # 고유 키
     login_page()
 # else:
 #     st.write("회원가입 또는 로그인 버튼을 클릭하세요.")
