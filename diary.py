@@ -58,7 +58,7 @@ def signup_page():
     address = st.text_input("주소 (시/도)")
 
     # 회원가입 버튼
-    if st.button("회원가입"):
+    if st.button("회원가입", key="signup"):
         if password != password_confirm:
             st.error("비밀번호가 일치하지 않습니다.")
         else:
@@ -69,7 +69,7 @@ def login_page():
     username = st.text_input("이메일")
     password = st.text_input("비밀번호", type="password")
     
-    if st.button("로그인"):
+    if st.button("로그인", key="login"):
         try:
             user = auth.sign_in_with_email_and_password(email, password)
             # 여기에 로그인 로직 추가
