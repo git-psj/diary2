@@ -3,7 +3,19 @@ import firebase_admin
 from firebase_admin import credentials, auth, firestore
 
 # Firebase 초기화
-firebase_credentials = st.secrets["firebase"]
+firebase_credentials = {
+  "type": "service_account",
+  "project_id": "e-diary-61dc0",
+  "private_key_id": "64aa1667bb5fb2eccafbcb305cbb667914e38623",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC6J19a0sBA76d6\nr5jN4unuI7BiD20SKmpd3AJO44J+eCA/ZZqdua0ZtIup4MFseK3Vaar2vKwF8qiu\n2RK8YKeTQOfcoJbzru37+uFhf9sY5L3m/zZoncA6+IBcVxfRnsk6n70YgFTQKf8N\nmyP9MVS9l/peIvNUsSsw0yWIGosv8DbxVBuSSckhTX0mZ/2A12VucRvTwlWBvvoY\nPbYr0HxwDgjjAznHXdWKhqRavw65q3vNOoX49cRL9FD3rhOnGTYtR4UFwuzZGr9d\nlIZmFEMyFCckyrZOFCE741d7zR16ikZ2eOhY5+7meXnWp9zpcBFq+nU8L08I2cIl\nczOvST5lAgMBAAECggEADjFvG8Wl0uc/pbyg5R6MwRNt7b9I8z5r2oXDx0mhawy0\nDyFec76MbCe2RL8jAECgDTCy6eavI8tbASA1eLEF4qK4PiIgYEQEirz+IijvBsVD\nlWRjPM0j5ifvexricTqu4EFkCx79vtr03CmDMCYEVNBMzpCe00sO0ZIuJZc6G+8O\neh+cpt+mmefSqmJqbPvWsgghegaMcegKAzxQpQ7FOXUlbQqxrczpmUvtg7YZd98K\nyXVFKCrDnIOgbd3uMd9WUqvcDXQ7b8/bMnLthvoMxYvjX1T7j0Y7HIS5CzMVyhel\nuWqu2DPtnF36kt8hHM+bwIAtq6vvcf9P7Gs9FXN5oQKBgQDy3h4XCjeKA5ZGbx95\nD/ooYGpsdQJFzmoCU11nQpzc4fFQHOtOmCFwdlDI+OXhzqI4mL0BSIfrnTf0Lq+I\nPBAwVCBSXPmttn0uhc/ESLUTDz2ZFAm8NsuMNKxKJN1kC+f3oJAXw5JgJWG3tbME\nosbkAFfRdibci8h/Pj5QtVBrwwKBgQDEODJPSTlQFixIOhjPEQucQH/TFORKH6I7\nJYaDd4kq5YmOciXBb2kZwYt/Q39QbyZO+8MvE8ika82mutCth1w3AsPpovOUq9Un\nJOs0XmXMuWNBLJs0EsPpErMejstHJKmH6nayGw2dqHspx8Pd+eXO5Y58ebdhdlPO\neZyBOt2StwKBgQCpUnhSAdqEy0lq47Bim+QBYG7yHIWwG1/HLU3SXxuz14aBHxhi\nnCe8G5Do/LZwvrpUkRA8o8+3Uc4f3KieZ5m1yAEcyxt7o94UoFAg/bvYhOiiH9lF\nskIpBtQTgS4kwTRBbVzoZH5Zr9Y32WLs2XumnCKdsy0W2BG5vLB/XlmqNwKBgEyz\ncucPRnoJ0NGC9EOs9A7mH5FRb1OSPgZEyuoFBfdgtn6aHCwa8siAoZjjt5anfCAP\nxeJXJ20uPrtX9059xQwz5oUjj3ekG7QreE2GQODf7u6BE0Itu6sWBjKBuvBaYnKg\nsjk43f+s5kgUsHnKv4w6q5H4ujg82tGxM/5IFmjNAoGAZhyL4xvIEsxKi4Am9wnu\n/5nx3fD3NzfBhuEzkTSKe+i2QURvX7ziYIQ2A20DSfnSoG9t55Gk79YgeA3B0rg+\n8I4uN72R452u21f2bzHGO/S9/KqcanmWmnxln3hlUOEt2/p2rDFPifDDzNdLHxGn\nt7zdnzeN/fQFf6PZRTy9jUQ=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-iig30@e-diary-61dc0.iam.gserviceaccount.com",
+  "client_id": "112991912909130790639",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-iig30%40e-diary-61dc0.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
 cred = credentials.Certificate(firebase_credentials)
 firebase_admin.initialize_app(cred)
 
