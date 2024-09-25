@@ -1,3 +1,5 @@
+%pip install firebase-admin
+
 import streamlit as st
 
 # 페이지 레이아웃 설정
