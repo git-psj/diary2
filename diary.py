@@ -1,4 +1,4 @@
-%pip install firebase-admin
+pip install firebase-admin
 
 import streamlit as st
 
