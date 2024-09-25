@@ -24,6 +24,7 @@ if not firebase_admin._apps:
 # Firestore 초기화
 db = firestore.client()
 
+
 def register_user(email, password, nickname, age_group, gender, address):
     try:
         # Firebase Authentication으로 사용자 등록
@@ -44,7 +45,7 @@ def register_user(email, password, nickname, age_group, gender, address):
     except Exception as e:
         st.error(f"오류 발생: {e}")
 
-def main():
+def def signup_page():
     st.title("회원가입")
 
     # 회원가입 입력 폼
@@ -63,5 +64,19 @@ def main():
         else:
             register_user(email, password, nickname, age_group, gender, address)
 
-if __name__ == "__main__":
-    main()
+def login_page():
+    st.title("로그인 페이지")
+    username = st.text_input("사용자 이름")
+    password = st.text_input("비밀번호", type="password")
+    
+    if st.button("로그인"):
+        # 여기에 로그인 로직 추가
+        st.success("로그인 성공!")
+
+
+if st.button("회원가입"):
+    signup_page()
+elif st.button("로그인"):
+    login_page()
+else:
+    st.write("회원가입 또는 로그인 버튼을 클릭하세요.")
