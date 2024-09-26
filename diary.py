@@ -99,7 +99,7 @@ uploaded_image = st.file_uploader("이미지 삽입", type=['jpg', 'png', 'jpeg'
 if st.button("저장"):
     # 파이어베이스에 저장
     diary_entry = {
-        "id" : auth.get_user_by_email(username)
+        "id" : auth.get_user_by_email(username),
         "date": selected_date.strftime("%Y-%m-%d"),
         "content": diary_text,
         "image": uploaded_image.name if uploaded_image else None
