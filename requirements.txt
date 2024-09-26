@@ -1,4 +1,5 @@
 firebase_admin
+streamlit_option_menu
 pysqlite3-binary
 langchain
 chromadb
