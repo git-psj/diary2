@@ -34,6 +34,8 @@ if not firebase_admin._apps:
 # Streamlit 앱 시작
 def main():
     st.title("나만의 일기장")
+    text = "이것은 하이라이트 예시입니다. 하이라이트할 단어는 <mark>여기</mark> 입니다."
+    st.markdown(text, unsafe_allow_html=True)
 
     # 로그인/회원가입 페이지
     if 'user' not in st.session_state:
