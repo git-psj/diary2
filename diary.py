@@ -53,7 +53,7 @@ def main():
                 print("로그인 실패:", e)
         if st.button("회원가입"):
             try:
-                user = auth.create_user(st.session_state.email, password)
+                user = auth.create_user(email=st.session_state.email, password=password)
                 st.session_state['user'] = user.uid
                 st.success("회원가입 성공!")
             except Exception as e:
