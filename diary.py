@@ -72,7 +72,7 @@ def login_page():
     
     if st.button("로그인", key="login"):
         try:
-            user = auth.sign_in_with_email_and_password(email, password)
+            # user = auth.sign_in_with_email_and_password(email, password)
             email = auth.get_user_by_email(username)
             # 로그인 성공 시 처리 로직 추가
         
