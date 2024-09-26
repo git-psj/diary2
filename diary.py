@@ -26,9 +26,10 @@ firebase_credentials = {
 
 
 
-# Firebase 초기화 (서버 환경에서 실행 시)
-cred = credentials.Certificate(firebase_credentials)
-firebase_admin.initialize_app(cred)
+# # Firebase 초기화 중복 방지
+if not firebase_admin._apps:
+    cred = credentials.Certificate(firebase_credentials)
+    firebase_admin.initialize_app(cred)
 
 # Streamlit 앱 시작
 def main():
