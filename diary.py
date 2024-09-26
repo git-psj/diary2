@@ -40,19 +40,30 @@ def main():
         st.text_input("이메일", key="email")
         password = st.text_input("비밀번호", type="password")
         if st.button("로그인"):
+            # try:
+            #     user = auth.sign_in_with_email_and_password(st.session_state.email, password)
+            #     st.session_state['user'] = user.uid
+            #     st.success("로그인 성공!")
+            # except Exception as e:
+            #     st.error(e)
             try:
-                user = auth.sign_in_with_email_and_password(st.session_state.email, password)
-                st.session_state['user'] = user.uid
-                st.success("로그인 성공!")
+                user = auth.sign_in_with_email_and_password(email, password)
+                print("로그인 성공:", user.uid)
             except Exception as e:
-                st.error(e)
+                print("로그인 실패:", e)
         if st.button("회원가입"):
             try:
-                user = auth.create_user_with_email_and_password(st.session_state.email, password)
+                user = auth.create_user(st.session_state.email, password)
                 st.session_state['user'] = user.uid
                 st.success("회원가입 성공!")
             except Exception as e:
                 st.error(e)
+            # try:
+            #     user = auth.create_user_with_email_and_password(st.session_state.email, password)
+            #     st.session_state['user'] = user.uid
+            #     st.success("회원가입 성공!")
+            # except Exception as e:
+            #     st.error(e)
 
     # 일기 작성 페이지
     else:
