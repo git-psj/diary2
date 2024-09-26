@@ -18,14 +18,13 @@ firebase_credentials = {
     "client_x509_cert_url": st.secrets["firebase"]["client_x509_cert_url"]
 }
 
-# 파싱된 dict로 Firebase 초기화
+# Firebase 초기화 중복 방지
 if not firebase_admin._apps:
     cred = credentials.Certificate(firebase_credentials)
     firebase_admin.initialize_app(cred)
 
 # Firestore 초기화
 db = firestore.client()
-
 
 def register_user(email, password, nickname, age_group, gender, address):
     try:
@@ -68,23 +67,16 @@ def signup_page():
 
 def login_page():
     st.title("로그인 페이지")
-    username = st.text_input("이메일")
+    email = st.text_input("이메일")
     password = st.text_input("비밀번호", type="password")
     
     if st.button("로그인", key="login"):
         try:
             user = auth.sign_in_with_email_and_password(email, password)
-            # 여기에 로그인 로직 추가
-            # 예를 들어, 사용자의 비밀번호를 확인하는 추가적인 로직이 필요합니다.
-            st.success(f"{user.email}님, 로그인 성공!")
+            # 로그인 성공 시 처리 로직 추가
+            st.success(f"{email}님, 로그인 성공!")
         except auth.AuthError as e:
             st.error(f"로그인 실패: {str(e)}")
-
-
-
-
-
-
 
 # 기본 페이지 설정
 st.set_page_config(page_title="일기 작성", layout="wide")
@@ -120,25 +112,17 @@ if st.button("저장"):
 if st.button("솔루션 보러가기"):
     st.write("솔루션 페이지로 이동합니다.")
 
-
-
-
-
-
+# 세션 상태 확인 및 페이지 설정
 if "page" not in st.session_state:
     st.session_state.page = "login" 
 
-    
 if st.button("회원가입 하러 가기", key="select_signup"):  # 고유 키
     st.session_state.page = "signup"
 elif st.button("로그인 하러 가기", key="select_login"):  # 고유 키
     st.session_state.page = "login"
-# else:
-#     st.write("회원가입 또는 로그인 버튼을 클릭하세요.")
 
-
+# 세션 상태에 따라 로그인 또는 회원가입 페이지 표시
 if st.session_state.page == "login":
     login_page()
 else:
     signup_page()
-    
