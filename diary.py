@@ -73,7 +73,9 @@ def login_page():
     if st.button("로그인", key="login"):
         try:
             user = auth.sign_in_with_email_and_password(email, password)
+            email = auth.get_user_by_email(username)
             # 로그인 성공 시 처리 로직 추가
+        
             st.success(f"{email}님, 로그인 성공!")
         except auth.exceptions.FirebaseError as e:
             st.error(f"로그인 실패: {str(e)}")
