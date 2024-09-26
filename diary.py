@@ -5,6 +5,10 @@
 # import requests
 
 
+import streamlit as st
+import firebase_admin
+from firebase_admin import credentials, auth, firestore
+
 # # secrets.toml에서 Firebase 자격 증명 정보 가져오기
 firebase_credentials = {
     "type": st.secrets["firebase"]["type"],
@@ -21,9 +25,7 @@ firebase_credentials = {
 }
 
 
-import streamlit as st
-import firebase_admin
-from firebase_admin import credentials, auth, firestore
+
 
 # Firebase 초기화 (서버 환경에서 실행 시)
 cred = credentials.Certificate('path/to/your/serviceAccountKey.json')
