@@ -27,7 +27,7 @@ firebase_credentials = {
 
 
 # Firebase 초기화 (서버 환경에서 실행 시)
-cred = credentials.Certificate('path/to/your/serviceAccountKey.json')
+cred = credentials.Certificate(firebase_credentials)
 firebase_admin.initialize_app(cred)
 
 # Streamlit 앱 시작
