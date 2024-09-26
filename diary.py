@@ -1,8 +1,8 @@
 import streamlit as st
 import firebase_admin
 from firebase_admin import credentials, auth, firestore
-from streamlit_option_menu import option_menu
 from datetime import datetime
+import requests
 
 # secrets.toml에서 Firebase 자격 증명 정보 가져오기
 firebase_credentials = {
@@ -15,7 +15,8 @@ firebase_credentials = {
     "auth_uri": st.secrets["firebase"]["auth_uri"],
     "token_uri": st.secrets["firebase"]["token_uri"],
     "auth_provider_x509_cert_url": st.secrets["firebase"]["auth_provider_x509_cert_url"],
-    "client_x509_cert_url": st.secrets["firebase"]["client_x509_cert_url"]
+    "client_x509_cert_url": st.secrets["firebase"]["client_x509_cert_url"],
+    "apiKey": st.secrets["firebase"]["apiKey"]  # Firebase Web API Key 추가
 }
 
 # Firebase 초기화 중복 방지
@@ -26,6 +27,23 @@ if not firebase_admin._apps:
 # Firestore 초기화
 db = firestore.client()
 
+# Firebase REST API를 사용하여 로그인 처리
+def sign_in_with_email_and_password(email, password):
+    url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={firebase_credentials['apiKey']}"
+    payload = {
+        "email": email,
+        "password": password,
+        "returnSecureToken": True
+    }
+    response = requests.post(url, json=payload)
+
+    if response.status_code == 200:
+        data = response.json()
+        return data['idToken']  # Firebase ID 토큰 반환
+    else:
+        raise Exception(response.json().get('error', {}).get('message', '로그인 실패'))
+
+# 회원가입 처리 함수
 def register_user(email, password, nickname, age_group, gender, address):
     try:
         # Firebase Authentication으로 사용자 등록
@@ -46,6 +64,7 @@ def register_user(email, password, nickname, age_group, gender, address):
     except Exception as e:
         st.error(f"오류 발생: {e}")
 
+# 회원가입 페이지
 def signup_page():
     st.title("회원가입")
 
@@ -65,6 +84,7 @@ def signup_page():
         else:
             register_user(email, password, nickname, age_group, gender, address)
 
+# 로그인 페이지
 def login_page():
     st.title("로그인 페이지")
     email = st.text_input("이메일")
@@ -72,12 +92,10 @@ def login_page():
     
     if st.button("로그인", key="login"):
         try:
-            # user = auth.sign_in_with_email_and_password(email, password)
-            email = auth.get_user_by_email(email)
-            # 로그인 성공 시 처리 로직 추가
-        
-            st.success(f"{email}님, 로그인 성공!")
-        except firebase_admin.exceptions.FirebaseError as e:
+            # Firebase REST API를 통한 로그인
+            id_token = sign_in_with_email_and_password(email, password)
+            st.success(f"로그인 성공! ID 토큰: {id_token}")
+        except Exception as e:
             st.error(f"로그인 실패: {str(e)}")
 
 # 기본 페이지 설정
@@ -89,7 +107,6 @@ with st.sidebar:
 
 # 일기 작성 레이아웃
 st.markdown(f"## {selected_date} 일기 작성")
-# st.markdown(auth.get_user_by_email(username))
 
 # 일기 내용 입력
 diary_text = st.text_area("일기 내용 입력", height=200)
@@ -101,7 +118,6 @@ uploaded_image = st.file_uploader("이미지 삽입", type=['jpg', 'png', 'jpeg'
 if st.button("저장"):
     # 파이어베이스에 저장
     diary_entry = {
-        # "id" : auth.get_user_by_email(username),
         "date": selected_date.strftime("%Y-%m-%d"),
         "content": diary_text,
         "image": uploaded_image.name if uploaded_image else None
