@@ -1,6 +1,8 @@
 import streamlit as st
 import firebase_admin
 from firebase_admin import credentials, auth, firestore
+from streamlit_option_menu import option_menu
+from datetime import datetime
 
 # secrets.toml에서 Firebase 자격 증명 정보 가져오기
 firebase_credentials = {
@@ -79,9 +81,53 @@ def login_page():
             st.error(f"로그인 실패: {str(e)}")
 
 
+
+
+
+
+
+# 기본 페이지 설정
+st.set_page_config(page_title="일기 작성", layout="wide")
+
+# 왼쪽에 달력 표시
+with st.sidebar:
+    selected_date = st.date_input("날짜 선택", datetime.now())
+
+# 일기 작성 레이아웃
+st.markdown(f"## {selected_date} 일기 작성")
+
+# 일기 내용 입력
+diary_text = st.text_area("일기 내용 입력", height=200)
+
+# 이미지 업로드
+uploaded_image = st.file_uploader("이미지 삽입", type=['jpg', 'png', 'jpeg'])
+
+# 저장 버튼
+if st.button("저장"):
+    # 파이어베이스에 저장
+    diary_entry = {
+        "date": selected_date.strftime("%Y-%m-%d"),
+        "content": diary_text,
+        "image": uploaded_image.name if uploaded_image else None
+    }
+    
+    # 파이어베이스에 일기 저장
+    db.collection("diaries").add(diary_entry)
+    
+    st.success("일기가 저장되었습니다.")
+
+# 솔루션 보기 버튼
+if st.button("솔루션 보러가기"):
+    st.write("솔루션 페이지로 이동합니다.")
+
+
+
+
+
+
 if "page" not in st.session_state:
     st.session_state.page = "login" 
-    
+
     
 if st.button("회원가입 하러 가기", key="select_signup"):  # 고유 키
     st.session_state.page = "signup"
