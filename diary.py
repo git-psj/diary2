@@ -87,6 +87,7 @@ with st.sidebar:
 
 # 일기 작성 레이아웃
 st.markdown(f"## {selected_date} 일기 작성")
+st.markdown(auth.get_user_by_email(username))
 
 # 일기 내용 입력
 diary_text = st.text_area("일기 내용 입력", height=200)
@@ -98,6 +99,7 @@ uploaded_image = st.file_uploader("이미지 삽입", type=['jpg', 'png', 'jpeg'
 if st.button("저장"):
     # 파이어베이스에 저장
     diary_entry = {
+        "id" : auth.get_user_by_email(username)
         "date": selected_date.strftime("%Y-%m-%d"),
         "content": diary_text,
         "image": uploaded_image.name if uploaded_image else None
